@@ -1,0 +1,80 @@
+{
+  "name": "@scipe/feed",
+  "version": "0.0.0",
+  "description": "sci.pe changes feed",
+  "main": "dist/index.js",
+  "scripts": {
+    "set-couchdb-auth": "librarian secure",
+    "format": "prettier --single-quote --write \"{src,test}/**/*.js\"",
+    "redis": "$(brew info redis | tail -1)",
+    "init": "npm run delete-auth-db && npm run create-auth-db && npm run push-auth-db && npm run delete-db && npm run create-db && npm run push-ddoc && npm run set-couchdb-auth",
+    "create-auth-db": "curl -XPUT ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${COUCH_AUTH_DB:=_users}",
+    "delete-auth-db": "curl -XDELETE ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${COUCH_AUTH_DB:=_users}",
+    "push-auth-db": "./node_modules/.bin/couchapp push ./node_modules/@scipe/ddoc-auth/ddoc.js ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${COUCH_AUTH_DB:=_users}",
+    "create-db": "curl -XPUT ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${DB_NAME:=scienceai}",
+    "delete-db": "curl -XDELETE ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${DB_NAME:=scienceai}",
+    "push-ddoc": "./node_modules/.bin/couchapp push ./node_modules/@scipe/ddoc/ddoc.js ${COUCH_PROTOCOL:=http:}//${COUCH_ADMIN_USERNAME:=admin}:${COUCH_ADMIN_PASSWORD:=pass}@${COUCH_HOST:=127.0.0.1}:${COUCH_PORT:=5984}/${DB_NAME:=scienceai}",
+    "pretest": "cross-env DB_NAME=test-feed npm run create-auth-db && cross-env DB_NAME=test-feed npm run push-auth-db && cross-env DB_NAME=test-feed npm run delete-db && cross-env DB_NAME=test-feed npm run create-db && cross-env DB_NAME=test-feed npm run push-ddoc && cross-env DB_NAME=test-feed npm run set-couchdb-auth",
+    "test": "cross-env DB_NAME=test-feed mocha --require @babel/register --bail --exit",
+    "build": "rm -rf dist && babel src --out-dir dist",
+    "watch": "babel -w src --out-dir dist",
+    "prepublish": "npm run build",
+    "postversion": "git push && git push --tags"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-transform-async-to-generator"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "@scipe"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/science-periodicals/action-feed.git"
+  },
+  "keywords": [
+    "action",
+    "changes feed",
+    "schema.org"
+  ],
+  "author": "Sebastien Ballesteros <sebastien@science.ai>",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/science-periodicals/action-feed/issues"
+  },
+  "homepage": "https://github.com/science-periodicals/action-feed",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.0",
+    "@babel/plugin-transform-async-to-generator": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
+    "@scipe/ddoc": "^1.0.0",
+    "@scipe/ddoc-auth": "^1.0.0",
+    "@scipe/eslint-config": "^1.0.0",
+    "couchapp": "^0.11.0",
+    "cross-env": "^5.2.0",
+    "mocha": "^6.1.4",
+    "prettier": "^1.17.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.4.4",
+    "@scipe/create-error": "^1.0.0",
+    "@scipe/librarian": "^1.0.0",
+    "async": "^2.6.2",
+    "bunyan": "^1.8.12",
+    "changes-stream": "^2.2.0",
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
+  }
+}
