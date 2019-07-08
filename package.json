@@ -1,6 +1,6 @@
 {
   "name": "@scipe/feed",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "sci.pe changes feed",
   "main": "dist/index.js",
   "scripts": {
