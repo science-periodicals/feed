@@ -1,5 +1,7 @@
 # @scipe/feed
 
+[![CircleCI](https://circleci.com/gh/science-periodicals/feed.svg?style=svg&circle-token=13d315c31cd76557522a5591084cd4f3b65d8cbc)](https://circleci.com/gh/science-periodicals/feed)
+
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 sci.pe changes feed emitting schema.org `DataFeedItem`.
